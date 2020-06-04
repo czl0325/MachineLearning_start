@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction import DictVectorizer
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, export_graphviz
 
 # 读取泰坦尼克号的所有乘客信息
 data = pd.read_csv("http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic.txt")
@@ -27,3 +27,6 @@ x_test = dict.transform(x_test.to_dict(orient="records"))
 dec = DecisionTreeClassifier()
 dec.fit(x_train, y_train)
 print("预测的准确率：", dec.score(x_test, y_test))
+
+# 导出决策树的结构，通过命令`dot -Tpng tree.dot -o tree.png`将dot转换成png
+export_graphviz(dec, out_file="./tree.dot", feature_names=None)

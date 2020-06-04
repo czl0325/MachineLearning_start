@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 
@@ -48,10 +48,20 @@ x_test = std.transform(x_test)
 # 进行k近邻算法流程
 knn = KNeighborsClassifier()
 knn.fit(x_train, y_train)
+# # 得出预测结果
+# y_predict = knn.predict(x_test)
+# print("预测的目标签到位置为：", y_predict)
+# # 得出准确率
+# print("预测的准确率:", knn.score(x_test, y_test))
 
-# 得出预测结果
-y_predict = knn.predict(x_test)
-print("预测的目标签到位置为：", y_predict)
-
-# 得出准确率
-print("预测的准确率:", knn.score(x_test, y_test))
+# 网格搜索来找到最优参数
+# 构造一些参数的值进行搜索，例如KNeighborsClassifier可以传递n_neighbors的超参数，设置三个值来查看哪个值的效果最好
+param = {"n_neighbors": [3, 5, 10]}
+# 进行网格搜索，cv指分为几栏，正常是10栏
+gc = GridSearchCV(knn, param_grid=param, cv=10)
+gc.fit(x_train, y_train)
+# 预测准确率
+print("在测试集上准确率：", gc.score(x_test, y_test))
+print("在交叉验证当中最好的结果：", gc.best_score_)
+print("选择最好的模型是：", gc.best_estimator_)
+print("每个超参数每次交叉验证的结果：", gc.cv_results_)
